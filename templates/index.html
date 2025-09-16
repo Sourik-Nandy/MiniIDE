@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mini Multi-Language IDE</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #1e1e1e;
+            color: #fff;
+            padding: 20px;
+        }
+        #editor {
+            height: 400px;
+            width: 100%;
+            border: 1px solid #555;
+        }
+        pre {
+            background: #222;
+            color: #0f0;
+            padding: 10px;
+            height: 200px;
+            overflow-y: scroll;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            font-size: 16px;
+            background: #007acc;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #005f99;
+        }
+        select {
+            padding: 5px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+    </style>
+    <!-- Ace Editor CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.15.2/ace.js"></script>
+</head>
+<body>
+    <h2>Mini Multi-Language IDE</h2>
+
+    <form method="POST" id="codeForm">
+        <label for="language">Select Language:</label>
+        <select name="language" id="language">
+            <option value="python" {% if language=='python' %}selected{% endif %}>Python</option>
+            <option value="java" {% if language=='java' %}selected{% endif %}>Java</option>
+            <option value="c" {% if language=='c' %}selected{% endif %}>C</option>
+        </select>
+        <br><br>
+
+        <!-- Ace Editor -->
+        <div id="editor">{{ code }}</div>
+        <textarea name="code" id="code" style="display:none;"></textarea>
+        <br>
+        <button type="submit">Run Code</button>
+    </form>
+
+    <h3>Output:</h3>
+    <pre>{{ output }}</pre>
+
+    <script>
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.session.setMode("ace/mode/python");
+        editor.session.setTabSize(4);
+        editor.session.setUseSoftTabs(true);
+        editor.setFontSize(14);
+        editor.setOptions({
+            enableBasicAutocompletion: true,
+            enableSnippets: true,
+            enableLiveAutocompletion: true
+        });
+
+        var languageSelect = document.getElementById("language");
+        languageSelect.addEventListener("change", function() {
+            if(this.value === "python") {
+                editor.session.setMode("ace/mode/python");
+            } else if(this.value === "java") {
+                editor.session.setMode("ace/mode/java");
+            } else if(this.value === "c") {
+                editor.session.setMode("ace/mode/c_cpp");
+            }
+        });
+
+        var form = document.getElementById("codeForm");
+        form.addEventListener("submit", function() {
+            document.getElementById("code").value = editor.getValue();
+        });
+    </script>
+</body>
+</html>
